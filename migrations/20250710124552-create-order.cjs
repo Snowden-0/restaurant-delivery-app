@@ -22,22 +22,10 @@ module.exports = {
       userId: {
         type: DataTypes.UUID,
         allowNull: false,
-        references: {
-          model: 'user',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT',
       },
       restaurantId: {
         type: DataTypes.UUID,
         allowNull: false,
-        references: {
-          model: 'restaurant',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT',
       },
       createdAt: {
         allowNull: false,
@@ -53,7 +41,6 @@ module.exports = {
   },
 
   async down(queryInterface /*, Sequelize */) {
-    // If you ever need to remove the enum type as well, you'd do it here.
     await queryInterface.dropTable('order');
   },
 };

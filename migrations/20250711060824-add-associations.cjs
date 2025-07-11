@@ -1,178 +1,152 @@
 'use strict';
 
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.sequelize.transaction(async (transaction) => {
-      // Deliveries -> Order
-      await queryInterface.addConstraint('deliveries', {
-        fields: ['orderId'],
-        type: 'foreign key',
-        name: 'FK_deliveries_order',
-        references: {
-          table: 'order',
-          field: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT',
-        transaction
-      });
-
-      // Payments -> Order
-      await queryInterface.addConstraint('payments', {
-        fields: ['orderId'],
-        type: 'foreign key',
-        name: 'FK_payments_order',
-        references: {
-          table: 'order',
-          field: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT',
-        transaction
-      });
-
-      // Ratings -> Order
-      await queryInterface.addConstraint('ratings', {
-        fields: ['orderId'],
-        type: 'foreign key',
-        name: 'FK_ratings_order',
-        references: {
-          table: 'order',
-          field: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT',
-        transaction
-      });
-
-      // Order -> User
-      await queryInterface.addConstraint('order', {
+    // We're wrapping all promises in a Promise.all to run them concurrently for efficiency.
+    // However, if you have dependencies between these constraints, you should run them sequentially.
+    // In this case, the order doesn't matter as all tables have been created.
+    return Promise.all([
+      // Foreign key for 'order' table
+      queryInterface.addConstraint('order', {
         fields: ['userId'],
         type: 'foreign key',
-        name: 'FK_order_user',
+        name: 'fk_order_user_id', // optional, but recommended for clarity
         references: {
           table: 'user',
-          field: 'id'
+          field: 'id',
         },
-        onUpdate: 'CASCADE',
         onDelete: 'RESTRICT',
-        transaction
-      });
-
-      // Order -> Restaurant
-      await queryInterface.addConstraint('order', {
+        onUpdate: 'CASCADE',
+      }),
+      queryInterface.addConstraint('order', {
         fields: ['restaurantId'],
         type: 'foreign key',
-        name: 'FK_order_restaurant',
+        name: 'fk_order_restaurant_id',
         references: {
           table: 'restaurant',
-          field: 'id'
+          field: 'id',
         },
-        onUpdate: 'CASCADE',
         onDelete: 'RESTRICT',
-        transaction
-      });
+        onUpdate: 'CASCADE',
+      }),
 
-      // Order Items -> Order
-      await queryInterface.addConstraint('order_items', {
+      // Foreign keys for 'deliveries' table
+      queryInterface.addConstraint('deliveries', {
         fields: ['orderId'],
         type: 'foreign key',
-        name: 'FK_order_items_order',
+        name: 'fk_deliveries_order_id',
         references: {
           table: 'order',
-          field: 'id'
+          field: 'id',
         },
-        onUpdate: 'CASCADE',
         onDelete: 'RESTRICT',
-        transaction
-      });
+        onUpdate: 'CASCADE',
+      }),
 
-      // Order Items -> Menu Item
-      await queryInterface.addConstraint('order_items', {
-        fields: ['menuItemId'],
+      // Foreign keys for 'payments' table
+      queryInterface.addConstraint('payments', {
+        fields: ['orderId'],
         type: 'foreign key',
-        name: 'FK_order_items_menu_item',
+        name: 'fk_payments_order_id',
         references: {
-          table: 'menu_item',
-          field: 'id'
+          table: 'order',
+          field: 'id',
         },
-        onUpdate: 'CASCADE',
         onDelete: 'RESTRICT',
-        transaction
-      });
+        onUpdate: 'CASCADE',
+      }),
 
-      // Menu Item -> Restaurant
-      await queryInterface.addConstraint('menu_item', {
+      // Foreign keys for 'ratings' table
+      queryInterface.addConstraint('ratings', {
+        fields: ['orderId'],
+        type: 'foreign key',
+        name: 'fk_ratings_order_id',
+        references: {
+          table: 'order',
+          field: 'id',
+        },
+        onDelete: 'RESTRICT',
+        onUpdate: 'CASCADE',
+      }),
+
+      // Foreign keys for 'restaurant_cuisines' table
+      queryInterface.addConstraint('restaurant_cuisines', {
         fields: ['restaurantId'],
         type: 'foreign key',
-        name: 'FK_menu_item_restaurant',
+        name: 'fk_restaurant_cuisines_restaurant_id',
         references: {
           table: 'restaurant',
-          field: 'id'
+          field: 'id',
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT',
-        transaction
-      });
-
-      // Restaurant Cuisines -> Restaurant
-      await queryInterface.addConstraint('restaurant_cuisines', {
-        fields: ['restaurantId'],
-        type: 'foreign key',
-        name: 'FK_restaurant_cuisines_restaurant',
-        references: {
-          table: 'restaurant',
-          field: 'id'
-        },
-        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
-        transaction
-      });
-
-      // Restaurant Cuisines -> Cuisine
-      await queryInterface.addConstraint('restaurant_cuisines', {
+        onUpdate: 'CASCADE',
+      }),
+      queryInterface.addConstraint('restaurant_cuisines', {
         fields: ['cuisineId'],
         type: 'foreign key',
-        name: 'FK_restaurant_cuisines_cuisine',
+        name: 'fk_restaurant_cuisines_cuisine_id',
         references: {
           table: 'cuisine',
-          field: 'id'
+          field: 'id',
         },
-        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
-        transaction
-      });
-    });
+        onUpdate: 'CASCADE',
+      }),
+
+      // Foreign keys for 'order_items' table
+      queryInterface.addConstraint('order_items', {
+        fields: ['orderId'],
+        type: 'foreign key',
+        name: 'fk_order_items_order_id',
+        references: {
+          table: 'order',
+          field: 'id',
+        },
+        onDelete: 'RESTRICT',
+        onUpdate: 'CASCADE',
+      }),
+      queryInterface.addConstraint('order_items', {
+        fields: ['menuItemId'],
+        type: 'foreign key',
+        name: 'fk_order_items_menu_item_id',
+        references: {
+          table: 'menu_item',
+          field: 'id',
+        },
+        onDelete: 'RESTRICT',
+        onUpdate: 'CASCADE',
+      }),
+
+      // Foreign keys for 'menu_item' table
+      queryInterface.addConstraint('menu_item', {
+        fields: ['restaurantId'],
+        type: 'foreign key',
+        name: 'fk_menu_item_restaurant_id',
+        references: {
+          table: 'restaurant',
+          field: 'id',
+        },
+        onDelete: 'RESTRICT',
+        onUpdate: 'CASCADE',
+      }),
+    ]);
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.sequelize.transaction(async (transaction) => {
-      const constraintNames = [
-        'FK_deliveries_order',
-        'FK_payments_order',
-        'FK_ratings_order',
-        'FK_order_user',
-        'FK_order_restaurant',
-        'FK_order_items_order',
-        'FK_order_items_menu_item',
-        'FK_menu_item_restaurant',
-        'FK_restaurant_cuisines_restaurant',
-        'FK_restaurant_cuisines_cuisine'
-      ];
-      
-      for (const constraintName of constraintNames) {
-        try {
-          await queryInterface.removeConstraint(
-            constraintName.includes('_restaurant_cuisines_') 
-              ? 'restaurant_cuisines' 
-              : constraintName.split('_')[1],
-            constraintName,
-            { transaction }
-          );
-        } catch (err) {
-          console.warn(`Constraint ${constraintName} doesn't exist, skipping`);
-        }
-      }
-    });
-  }
+    // The 'down' method should remove the constraints in the reverse order of their creation,
+    // though with Promise.all it's less critical.
+    return Promise.all([
+      queryInterface.removeConstraint('order', 'fk_order_user_id'),
+      queryInterface.removeConstraint('order', 'fk_order_restaurant_id'),
+      queryInterface.removeConstraint('deliveries', 'fk_deliveries_order_id'),
+      queryInterface.removeConstraint('payments', 'fk_payments_order_id'),
+      queryInterface.removeConstraint('ratings', 'fk_ratings_order_id'),
+      queryInterface.removeConstraint('restaurant_cuisines', 'fk_restaurant_cuisines_restaurant_id'),
+      queryInterface.removeConstraint('restaurant_cuisines', 'fk_restaurant_cuisines_cuisine_id'),
+      queryInterface.removeConstraint('order_items', 'fk_order_items_order_id'),
+      queryInterface.removeConstraint('order_items', 'fk_order_items_menu_item_id'),
+      queryInterface.removeConstraint('menu_item', 'fk_menu_item_restaurant_id'),
+    ]);
+  },
 };

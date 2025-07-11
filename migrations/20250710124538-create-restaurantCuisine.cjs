@@ -8,23 +8,11 @@ module.exports = {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
-        references: {
-          model: 'restaurant',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
       cuisineId: {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
-        references: {
-          model: 'cuisine',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
     });
   },

@@ -25,20 +25,12 @@ module.exports = {
       orderId: {
         type: DataTypes.UUID,
         allowNull: false,
-        references: {
-          model: 'order', // Make sure 'order' is the correct table name for your orders
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT',
       },
     });
   },
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('payments');
-
-    // Clean up ENUM types (optional, but recommended for Postgres)
     await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_payments_method";');
     await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_payments_status";');
   },

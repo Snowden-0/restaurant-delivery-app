@@ -22,12 +22,6 @@ module.exports = {
         type: DataTypes.UUID,
         allowNull: false,
         unique: true,
-        references: {
-          model: 'order', // Make sure 'order' is the correct table name for your orders
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT',
       },
       createdAt: {
         allowNull: false,

@@ -38,12 +38,6 @@ module.exports = {
       restaurantId: {
         type: DataTypes.UUID,
         allowNull: false,
-        references: {
-          model: 'restaurant',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT',
       },
     });
   },
