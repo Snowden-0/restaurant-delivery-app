@@ -1,30 +1,30 @@
 import sequelize from '../config/database.js';
 import bcrypt from 'bcryptjs';
 
-export const findUserByUsername = async (username) => {
+export const findUserByEmail = async (email) => {
   try {
-    const query = `SELECT * FROM "users" WHERE "username" = :username;`;
+    const query = `SELECT * FROM "user" WHERE "email" = :email;`;
     const [results] = await sequelize.query(query, {
-      replacements: { username },
+      replacements: { email },
       type: sequelize.QueryTypes.SELECT,
     });
     return results; // Sequelize returns the first result object directly
   } catch (error) {
-    console.error('Error finding user by username:', error);
+    console.error('Error finding user by email:', error);
     throw error;
   }
 };
 
-export const createUser = async (username, password) => {
+export const createUser = async (name, email, password, phone_number, address) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
     const query = `
-      INSERT INTO "users" (username, password) 
-      VALUES (:username, :password) 
-      RETURNING id, username;
+      INSERT INTO "user" (name, email, password, phone_number, address) 
+      VALUES (:name, :email, :password, :phone_number, :address) 
+      RETURNING id, name, email, phone_number, address;
     `;
     const [results] = await sequelize.query(query, {
-      replacements: { username, password: hashedPassword },
+      replacements: { name, email, password: hashedPassword, phone_number, address },
       type: sequelize.QueryTypes.INSERT,
     });
     return results[0]; // Return the newly created user

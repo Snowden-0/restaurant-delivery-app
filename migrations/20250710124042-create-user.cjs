@@ -6,7 +6,7 @@ module.exports = {
     await queryInterface.createTable('user', {
       id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        defaultValue: Sequelize.literal('uuid_generate_v4()'),
         allowNull: false,
         primaryKey: true,
       },
@@ -19,11 +19,11 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      passwordHash: {
+      password: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      phoneNumber: {
+      phone_number: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -31,12 +31,12 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('NOW()'),
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('NOW()'),
