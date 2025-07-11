@@ -23,11 +23,11 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
       unique: true
     },
-    passwordHash: {
+    password: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    phoneNumber: {
+    phone_number: {
       type: DataTypes.STRING,
       allowNull: false
     },

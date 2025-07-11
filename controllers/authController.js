@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { findUserByUsername, createUser } from '../services/authService.js';
+import { findUserByEmail, createUser } from '../services/authService.js';
 
 // Global constants for error messages
-const ERR_USERNAME_PASSWORD_REQUIRED = 'Username and password are required.';
-const ERR_USERNAME_EXISTS = 'Username already exists.';
+const ERR_USERNAME_PASSWORD_REQUIRED = 'Please fill in the required fields';
+const ERR_EMAIL_EXISTS = 'Email already exists.';
 const ERR_SIGNUP_SERVER = 'Server error during signup.';
 const ERR_INVALID_CREDENTIALS = 'Invalid credentials.';
 const ERR_LOGIN_SERVER = 'Server error during login.';
@@ -13,19 +13,19 @@ const ERR_LOGIN_SERVER = 'Server error during login.';
 const TOKEN_EXPIRATION = '1h';
 
 export const signup = async (req, res) => {
-  const { username, password } = req.body;
+  const { name, email, password, phone_number, address } = req.body;
 
-  if (!username || !password) {
+  if (!name || !email || !password || !phone_number || !address) {
     return res.status(400).json({ message: ERR_USERNAME_PASSWORD_REQUIRED });
   }
 
   try {
-    const existingUser = await findUserByUsername(username);
+    const existingUser = await findUserByEmail(email);
     if (existingUser) {
-      return res.status(409).json({ message: ERR_USERNAME_EXISTS });
+      return res.status(409).json({ message: ERR_EMAIL_EXISTS });
     }
 
-    const newUser = await createUser(username, password);
+    const newUser = await createUser(name, email, password, phone_number, address);
     res.status(201).json({ message: 'User created successfully!', user: newUser });
   } catch (error) {
     res.status(500).json({ message: ERR_SIGNUP_SERVER, error: error.message });
@@ -33,14 +33,14 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  if (!username || !password) {
+  if (!email || !password) {
     return res.status(400).json({ message: ERR_USERNAME_PASSWORD_REQUIRED });
   }
 
   try {
-    const user = await findUserByUsername(username);
+    const user = await findUserByEmail(email);
     if (!user) {
       return res.status(401).json({ message: ERR_INVALID_CREDENTIALS });
     }
@@ -52,7 +52,7 @@ export const login = async (req, res) => {
 
     // Create JWT
     const token = jwt.sign(
-      { id: user.id, username: user.username },
+      { id: user.id, name: user.name, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: TOKEN_EXPIRATION }
     );
