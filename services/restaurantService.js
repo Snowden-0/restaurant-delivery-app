@@ -2,7 +2,7 @@ import  sequelize  from '../config/database.js';
 import { QueryTypes } from 'sequelize';
 
 export const getAllRestaurants = async (filters) => {
-  const { name, cuisine, isAvailable } = filters;
+  const { name, cuisine, showAll } = filters;
 
   let query = `
     SELECT r.*
@@ -19,14 +19,14 @@ export const getAllRestaurants = async (filters) => {
     replacements.name = `%${name}%`;
   }
 
-  if (isAvailable !== undefined) {
-    query += ` AND r."isAvailable" = :isAvailable`;
-    replacements.isAvailable = isAvailable === 'true';
-  }
-
   if (cuisine) {
     query += ` AND c.name ILIKE :cuisine`;
     replacements.cuisine = `%${cuisine}%`;
+  }
+
+  // Show only available restaurants if showAll !== 'true'
+  if (showAll !== 'true') {
+    query += ` AND r."isAvailable" = true`;
   }
 
   query += ` GROUP BY r.id`;
