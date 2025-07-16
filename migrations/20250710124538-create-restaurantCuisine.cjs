@@ -4,12 +4,12 @@ const { DataTypes } = require('sequelize');
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('restaurant_cuisines', {
-      restaurantId: {
+      restaurant_id: {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
       },
-      cuisineId: {
+      cuisine_id: {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,

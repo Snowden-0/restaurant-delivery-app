@@ -14,9 +14,9 @@ export default (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    driverName: DataTypes.STRING,
-    driverPhone: DataTypes.STRING,
-    orderId: {
+    driver_name: DataTypes.STRING,
+    driver_phone: DataTypes.STRING,
+    order_id: {
       type: DataTypes.UUID,
       allowNull: false,
       unique: true,

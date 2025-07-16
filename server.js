@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { connectDB } from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
+import restaurantRoutes from './routes/restaurantRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -20,7 +21,7 @@ connectDB();
 
 // API Routes
 app.use('/api/auth', authRoutes);
-
+app.use('/api/restaurants', restaurantRoutes);
 // Simple welcome route
 app.get('/', (req, res) => {
   res.send('<h1>Welcome to the Auth API</h1>');

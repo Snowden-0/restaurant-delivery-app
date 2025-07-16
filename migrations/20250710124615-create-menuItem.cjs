@@ -22,11 +22,11 @@ module.exports = {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
       },
-      imageUrl: {
+      image_url: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      isAvailable: {
+      is_available: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true,
@@ -35,7 +35,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      restaurantId: {
+      restaurant_id: {
         type: DataTypes.UUID,
         allowNull: false,
       },

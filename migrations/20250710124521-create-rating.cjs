@@ -18,17 +18,17 @@ module.exports = {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      orderId: {
+      order_id: {
         type: DataTypes.UUID,
         allowNull: false,
         unique: true,
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('NOW()'),
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('NOW()'),

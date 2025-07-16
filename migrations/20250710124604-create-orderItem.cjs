@@ -15,11 +15,11 @@ module.exports = {
         allowNull: false,
         defaultValue: 1,
       },
-      orderId: {
+      order_id: {
         type: DataTypes.UUID,
         allowNull: false,
       },
-      menuItemId: {
+      menu_item_id: {
         type: DataTypes.UUID,
         allowNull: false,
       },

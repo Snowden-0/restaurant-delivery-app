@@ -15,24 +15,24 @@ module.exports = {
         allowNull: false,
         defaultValue: 'pending',
       },
-      totalAmount: {
+      total_amount: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
       },
-      userId: {
+      user_id: {
         type: DataTypes.UUID,
         allowNull: false,
       },
-      restaurantId: {
+      restaurant_id: {
         type: DataTypes.UUID,
         allowNull: false,
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('NOW()'),
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('NOW()'),

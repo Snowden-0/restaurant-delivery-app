@@ -27,8 +27,8 @@ export default (sequelize, DataTypes) => {
       allowNull: false
     },
     description: DataTypes.TEXT,
-    imageUrl: DataTypes.STRING,
-    isAvailable: {
+    image_url: DataTypes.STRING,
+    is_available: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
     }

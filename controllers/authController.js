@@ -26,9 +26,9 @@ export const signup = async (req, res) => {
     }
 
     const newUser = await createUser(name, email, password, phone_number, address);
-    res.status(201).json({ message: 'User created successfully!', user: newUser });
+    return res.status(201).json({ message: 'User created successfully!', user: newUser });
   } catch (error) {
-    res.status(500).json({ message: ERR_SIGNUP_SERVER, error: error.message });
+    return res.status(500).json({ message: ERR_SIGNUP_SERVER, error: error.message });
   }
 };
 
@@ -57,14 +57,14 @@ export const login = async (req, res) => {
       { expiresIn: TOKEN_EXPIRATION }
     );
 
-    res.status(200).json({ message: 'Login successful!', token });
+    return res.status(200).json({ message: 'Login successful!', token });
   } catch (error) {
-    res.status(500).json({ message: ERR_LOGIN_SERVER, error: error.message });
+    return res.status(500).json({ message: ERR_LOGIN_SERVER, error: error.message });
   }
 };
 
 export const getProfile = (req, res) => {
-  res.status(200).json({
+  return res.status(200).json({
     message: "Welcome to your profile!",
     user: req.user
   });

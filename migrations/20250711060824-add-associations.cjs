@@ -9,7 +9,7 @@ module.exports = {
     return Promise.all([
       // Foreign key for 'order' table
       queryInterface.addConstraint('order', {
-        fields: ['userId'],
+        fields: ['user_id'],
         type: 'foreign key',
         name: 'fk_order_user_id', // optional, but recommended for clarity
         references: {
@@ -20,7 +20,7 @@ module.exports = {
         onUpdate: 'CASCADE',
       }),
       queryInterface.addConstraint('order', {
-        fields: ['restaurantId'],
+        fields: ['restaurant_id'],
         type: 'foreign key',
         name: 'fk_order_restaurant_id',
         references: {
@@ -33,7 +33,7 @@ module.exports = {
 
       // Foreign keys for 'deliveries' table
       queryInterface.addConstraint('deliveries', {
-        fields: ['orderId'],
+        fields: ['order_id'],
         type: 'foreign key',
         name: 'fk_deliveries_order_id',
         references: {
@@ -46,7 +46,7 @@ module.exports = {
 
       // Foreign keys for 'payments' table
       queryInterface.addConstraint('payments', {
-        fields: ['orderId'],
+        fields: ['order_id'],
         type: 'foreign key',
         name: 'fk_payments_order_id',
         references: {
@@ -59,7 +59,7 @@ module.exports = {
 
       // Foreign keys for 'ratings' table
       queryInterface.addConstraint('ratings', {
-        fields: ['orderId'],
+        fields: ['order_id'],
         type: 'foreign key',
         name: 'fk_ratings_order_id',
         references: {
@@ -72,7 +72,7 @@ module.exports = {
 
       // Foreign keys for 'restaurant_cuisines' table
       queryInterface.addConstraint('restaurant_cuisines', {
-        fields: ['restaurantId'],
+        fields: ['restaurant_id'],
         type: 'foreign key',
         name: 'fk_restaurant_cuisines_restaurant_id',
         references: {
@@ -83,7 +83,7 @@ module.exports = {
         onUpdate: 'CASCADE',
       }),
       queryInterface.addConstraint('restaurant_cuisines', {
-        fields: ['cuisineId'],
+        fields: ['cuisine_id'],
         type: 'foreign key',
         name: 'fk_restaurant_cuisines_cuisine_id',
         references: {
@@ -96,7 +96,7 @@ module.exports = {
 
       // Foreign keys for 'order_items' table
       queryInterface.addConstraint('order_items', {
-        fields: ['orderId'],
+        fields: ['order_id'],
         type: 'foreign key',
         name: 'fk_order_items_order_id',
         references: {
@@ -107,7 +107,7 @@ module.exports = {
         onUpdate: 'CASCADE',
       }),
       queryInterface.addConstraint('order_items', {
-        fields: ['menuItemId'],
+        fields: ['menu_item_id'],
         type: 'foreign key',
         name: 'fk_order_items_menu_item_id',
         references: {
@@ -120,7 +120,7 @@ module.exports = {
 
       // Foreign keys for 'menu_item' table
       queryInterface.addConstraint('menu_item', {
-        fields: ['restaurantId'],
+        fields: ['restaurant_id'],
         type: 'foreign key',
         name: 'fk_menu_item_restaurant_id',
         references: {

@@ -22,7 +22,7 @@ module.exports = {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
       },
-      orderId: {
+      order_id: {
         type: DataTypes.UUID,
         allowNull: false,
       },

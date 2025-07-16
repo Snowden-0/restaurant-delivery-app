@@ -32,35 +32,35 @@ models.Rating = defineRating(sequelize, DataTypes);
 
 // Set up associations
 // User (Customer) Relationships
-models.User.hasMany(models.Order, { foreignKey: 'userId' });
-models.Order.belongsTo(models.User, { foreignKey: 'userId' });
+models.User.hasMany(models.Order, { foreignKey: 'user_id' });
+models.Order.belongsTo(models.User, { foreignKey: 'user_id' });
 
 // Restaurant Relationships
-models.Restaurant.hasMany(models.MenuItem, { foreignKey: 'restaurantId' });
-models.MenuItem.belongsTo(models.Restaurant, { foreignKey: 'restaurantId' });
-models.Restaurant.hasMany(models.Order, { foreignKey: 'restaurantId' });
-models.Order.belongsTo(models.Restaurant, { foreignKey: 'restaurantId' });
+models.Restaurant.hasMany(models.MenuItem, { foreignKey: 'restaurant_id' });
+models.MenuItem.belongsTo(models.Restaurant, { foreignKey: 'restaurant_id' });
+models.Restaurant.hasMany(models.Order, { foreignKey: 'restaurant_id' });
+models.Order.belongsTo(models.Restaurant, { foreignKey: 'restaurant_id' });
 
 // Order Relationships
-models.Order.hasMany(models.OrderItem, { foreignKey: 'orderId' });
-models.OrderItem.belongsTo(models.Order, { foreignKey: 'orderId' });
+models.Order.hasMany(models.OrderItem, { foreignKey: 'order_id' });
+models.OrderItem.belongsTo(models.Order, { foreignKey: 'order_id' });
 
-models.Order.hasOne(models.Delivery, { foreignKey: 'orderId' });
-models.Delivery.belongsTo(models.Order, { foreignKey: 'orderId' });
+models.Order.hasOne(models.Delivery, { foreignKey: 'order_id' });
+models.Delivery.belongsTo(models.Order, { foreignKey: 'order_id' });
 
-models.Order.hasOne(models.Payment, { foreignKey: 'orderId' });
-models.Payment.belongsTo(models.Order, { foreignKey: 'orderId' });
+models.Order.hasOne(models.Payment, { foreignKey: 'order_id' });
+models.Payment.belongsTo(models.Order, { foreignKey: 'order_id' });
 
-models.Order.hasOne(models.Rating, { foreignKey: 'orderId' });
-models.Rating.belongsTo(models.Order, { foreignKey: 'orderId' });
+models.Order.hasOne(models.Rating, { foreignKey: 'order_id' });
+models.Rating.belongsTo(models.Order, { foreignKey: 'order_id' });
 
 // Many-to-Many between Restaurant and Cuisine
-models.Restaurant.belongsToMany(models.Cuisine, { through: models.RestaurantCuisine, foreignKey: 'restaurantId' });
-models.Cuisine.belongsToMany(models.Restaurant, { through: models.RestaurantCuisine, foreignKey: 'cuisineId' });
+models.Restaurant.belongsToMany(models.Cuisine, { through: models.RestaurantCuisine, foreignKey: 'restaurant_id' });
+models.Cuisine.belongsToMany(models.Restaurant, { through: models.RestaurantCuisine, foreignKey: 'cuisine_id' });
 
 // MenuItem and OrderItem relation
-models.MenuItem.hasMany(models.OrderItem, { foreignKey: 'menuItemId' });
-models.OrderItem.belongsTo(models.MenuItem, { foreignKey: 'menuItemId' });
+models.MenuItem.hasMany(models.OrderItem, { foreignKey: 'menu_item_id' });
+models.OrderItem.belongsTo(models.MenuItem, { foreignKey: 'menu_item_id' });
 
 // (Optional) Invoke associate method in each model file
 Object.values(models)

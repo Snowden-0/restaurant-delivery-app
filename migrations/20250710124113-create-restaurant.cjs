@@ -26,21 +26,21 @@ module.exports = {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      imageUrl: {
+      image_url: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      isAvailable: {
+      is_available: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true,
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('NOW()'),
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: Sequelize.literal('NOW()'),
