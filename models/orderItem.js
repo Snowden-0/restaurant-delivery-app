@@ -20,12 +20,12 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 1
     },
-    orderId: {
+    order_id: {
       type: DataTypes.UUID,
       allowNull: false,
       references: { model: 'order', key: 'id' }
     },
-    menuItemId: {
+    menu_item_id: {
       type: DataTypes.UUID,
       allowNull: false,
       references: { model: 'menu_item', key: 'id' }

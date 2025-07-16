@@ -7,8 +7,8 @@ export const getAllRestaurants = async (filters) => {
   let query = `
     SELECT r.*
     FROM restaurant r
-    LEFT JOIN restaurant_cuisines rc ON r.id = rc."restaurantId"
-    LEFT JOIN cuisine c ON rc."cuisineId" = c.id
+    LEFT JOIN restaurant_cuisines rc ON r.id = rc."restaurant_id"
+    LEFT JOIN cuisine c ON rc."cuisine_id" = c.id
     WHERE 1=1
   `;
 
@@ -29,8 +29,6 @@ export const getAllRestaurants = async (filters) => {
     query += ` AND r."isAvailable" = true`;
   }
 
-  query += ` GROUP BY r.id`;
-
   return await sequelize.query(query, {
     type: QueryTypes.SELECT,
     replacements
@@ -46,31 +44,8 @@ export const getRestaurantById = async (id) => {
 
 export const getRestaurantMenu = async (restaurantId) => {
   return await sequelize.query(
-    `SELECT * FROM menu_item WHERE "restaurantId" = :restaurantId`,
-    { replacements: { restaurantId }, type: QueryTypes.SELECT }
+    `SELECT * FROM menu_item WHERE "restaurant_id" = :restaurant_id`,
+    { replacements: { restaurant_id: restaurantId }, type: QueryTypes.SELECT }
   );
 };
 
-export const getRestaurantCuisines = async (restaurantId) => {
-  return await sequelize.query(
-    `
-    SELECT c.*
-    FROM cuisine c
-    INNER JOIN restaurant_cuisines rc ON c.id = rc."cuisineId"
-    WHERE rc."restaurantId" = :restaurantId
-    `,
-    { replacements: { restaurantId }, type: QueryTypes.SELECT }
-  );
-};
-
-export const getAvailableRestaurants = async () => {
-  const query = `
-    SELECT *
-    FROM restaurant
-    WHERE "isAvailable" = true
-  `;
-
-  return await sequelize.query(query, {
-    type: QueryTypes.SELECT
-  });
-};

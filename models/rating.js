@@ -19,7 +19,7 @@ export default (sequelize, DataTypes) => {
       allowNull: false
     },
     comment: DataTypes.TEXT,
-    orderId: {
+    order_id: {
       type: DataTypes.UUID,
       allowNull: false,
       unique: true,

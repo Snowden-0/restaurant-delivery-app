@@ -23,13 +23,13 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false
     },
-    imageUrl: DataTypes.STRING,
-    isAvailable: {
+    image_url: DataTypes.STRING,
+    is_available: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
     },
     category: DataTypes.STRING,
-    restaurantId: {
+    restaurant_id: {
       type: DataTypes.UUID,
       allowNull: false,
       references: { model: 'restaurant', key: 'id' }

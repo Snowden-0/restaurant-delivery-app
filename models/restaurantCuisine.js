@@ -9,13 +9,13 @@ export default (sequelize, DataTypes) => {
   }
 
   RestaurantCuisine.init({
-    restaurantId: {
+    restaurant_id: {
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
       references: { model: 'restaurant', key: 'id' }
     },
-    cuisineId: {
+    cuisine_id: {
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,

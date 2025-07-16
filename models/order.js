@@ -23,16 +23,16 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.ENUM('pending', 'preparing', 'on_the_way', 'delivered', 'cancelled'),
       defaultValue: 'pending'
     },
-    totalAmount: {
+    total_amount: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false
     },
-    userId: {
+    user_id: {
       type: DataTypes.UUID,
       allowNull: false,
       references: { model: 'user', key: 'id' }
     },
-    restaurantId: {
+    restaurant_id: {
       type: DataTypes.UUID,
       allowNull: false,
       references: { model: 'restaurant', key: 'id' }

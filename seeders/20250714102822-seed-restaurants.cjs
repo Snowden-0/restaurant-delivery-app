@@ -13,10 +13,10 @@ module.exports = {
       phone:       faker.helpers.replaceSymbols('0##########', '#'),
       description: faker.lorem.sentences(2),
       // force imageUrl to null
-      imageUrl:    null,
-      isAvailable: faker.datatype.boolean(),
-      createdAt:   new Date(),
-      updatedAt:   new Date()
+      image_url:    null,
+      is_available: faker.datatype.boolean(),
+      created_at:   new Date(),
+      updated_at:   new Date()
     }));
 
     return queryInterface.bulkInsert('restaurant', restaurants, {});

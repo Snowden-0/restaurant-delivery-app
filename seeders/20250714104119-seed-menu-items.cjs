@@ -26,10 +26,10 @@ module.exports = {
       name: generateFoodName(),
       description: faker.lorem.sentence(),
       price: parseFloat(faker.commerce.price({ min: 5, max: 50 })),
-      imageUrl: null,
-      isAvailable: faker.datatype.boolean(),
+      image_url: null,
+      is_available: faker.datatype.boolean(),
       category: faker.helpers.arrayElement(categories),
-      restaurantId: faker.helpers.arrayElement(restaurantIds)
+      restaurant_id: faker.helpers.arrayElement(restaurantIds)
     }));
 
     return queryInterface.bulkInsert('menu_item', menuItems, {});
