@@ -2,13 +2,13 @@ import  sequelize  from '../config/database.js';
 import { QueryTypes } from 'sequelize';
 
 export const getAllRestaurants = async (filters) => {
-  const { name, cuisine, showAll } = filters;
+  const { name, cuisine, showAvailable } = filters;
 
   let query = `
-    SELECT r.*
+    SELECT DISTINCT r.*
     FROM restaurant r
-    LEFT JOIN restaurant_cuisines rc ON r.id = rc."restaurant_id"
-    LEFT JOIN cuisine c ON rc."cuisine_id" = c.id
+    LEFT JOIN restaurant_cuisines rc ON r.id = rc.restaurant_id
+    LEFT JOIN cuisine c ON rc.cuisine_id = c.id
     WHERE 1=1
   `;
 
@@ -25,8 +25,8 @@ export const getAllRestaurants = async (filters) => {
   }
 
   // Show only available restaurants if showAll !== 'true'
-  if (showAll !== 'true') {
-    query += ` AND r."isAvailable" = true`;
+  if (showAvailable === 'true') {
+    query += ` AND r.is_available = true`;
   }
 
   return await sequelize.query(query, {
@@ -44,7 +44,7 @@ export const getRestaurantById = async (id) => {
 
 export const getRestaurantMenu = async (restaurantId) => {
   return await sequelize.query(
-    `SELECT * FROM menu_item WHERE "restaurant_id" = :restaurant_id`,
+    `SELECT * FROM menu_item WHERE restaurant_id = :restaurant_id`,
     { replacements: { restaurant_id: restaurantId }, type: QueryTypes.SELECT }
   );
 };
