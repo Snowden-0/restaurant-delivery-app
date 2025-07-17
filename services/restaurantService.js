@@ -42,10 +42,3 @@ export const getRestaurantById = async (id) => {
   );
 };
 
-export const getRestaurantMenu = async (restaurantId) => {
-  return await sequelize.query(
-    `SELECT * FROM menu_item WHERE restaurant_id = :restaurant_id`,
-    { replacements: { restaurant_id: restaurantId }, type: QueryTypes.SELECT }
-  );
-};
-
