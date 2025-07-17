@@ -18,12 +18,3 @@ export const getById = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
-
-export const getMenu = async (req, res) => {
-  try {
-    const items = await service.getRestaurantMenu(req.params.id);
-    return res.json(items);
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-};
