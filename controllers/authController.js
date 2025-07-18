@@ -5,9 +5,9 @@ import { findUserByEmail, createUser } from '../services/authService.js';
 // Global constants for error messages
 const ERR_USERNAME_PASSWORD_REQUIRED = 'Please fill in the required fields';
 const ERR_EMAIL_EXISTS = 'Email already exists.';
-const ERR_SIGNUP_SERVER = 'Something went wrong.';
+const ERR_SIGNUP_SERVER = 'Something went wrong during Signup';
 const ERR_INVALID_CREDENTIALS = 'Invalid credentials.';
-const ERR_LOGIN_SERVER = 'Something went wrong.';
+const ERR_LOGIN_SERVER = 'Something went wrong during Login';
 const LOGIN_SUCCESS = 'Login successful!';
 const SIGNUP_SUCCESS = 'User created successfully!';
 
