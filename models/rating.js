@@ -29,7 +29,8 @@ export default (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Rating',
     tableName: 'ratings',
-    timestamps: true
+    timestamps: true,
+    paranoid: true
   });
 
   return Rating;

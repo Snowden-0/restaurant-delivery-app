@@ -4,21 +4,12 @@ const { v4: uuidv4 } = require('uuid');
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const cuisineNames = [
-      'Italian',
+      'Desi',
       'Chinese',
       'Mexican',
-      'Indian',
-      'Thai',
-      'American',
-      'Japanese',
-      'Mediterranean',
-      'French',
-      'Korean',
-      'Vietnamese',
+      'Italian',
       'Turkish',
-      'Spanish',
-      'Greek',
-      'Lebanese'
+      
     ];
 
     const cuisines = cuisineNames.map(name => ({

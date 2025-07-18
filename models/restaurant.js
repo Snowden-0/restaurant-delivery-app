@@ -36,7 +36,8 @@ export default (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Restaurant',
     tableName: 'restaurant',
-    timestamps: true
+    timestamps: true,
+    paranoid: true,
   });
 
   return Restaurant;

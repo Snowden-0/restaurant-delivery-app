@@ -26,7 +26,8 @@ export default (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Delivery',
     tableName: 'deliveries',
-    timestamps: true
+    timestamps: true,
+    paranoid: true
   });
 
   return Delivery;
