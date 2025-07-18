@@ -50,3 +50,29 @@ export const getRestaurantById = async (id) => {
     throw error; // Re-throw the error
   }
 };
+
+export const getRestaurantCuisines = async (restaurantId) => {
+  try {
+    const query = `
+      SELECT
+        c.id,
+        c.name
+      FROM
+        cuisine AS c
+      JOIN
+        restaurant_cuisines AS rc ON c.id = rc.cuisine_id
+      WHERE
+        rc.restaurant_id = :restaurantId;
+    `;
+
+    const cuisines = await sequelize.query(query, {
+      replacements: { restaurantId },
+      type: QueryTypes.SELECT
+    });
+
+    return cuisines;
+  } catch (error) {
+    console.error('Error fetching cuisines for restaurant:', error);
+    throw error;
+  }
+};
