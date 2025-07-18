@@ -1,7 +1,7 @@
 import * as cuisineService from '../services/cuisineService.js';
 
 const NO_RESTAURANTS_ERROR = 'No restaurants found for this cuisine.';
-const SERVER_ERROR = 'Internal server error.';
+const SERVER_ERROR = 'Something went wrong';
 
 export const getAllCuisines = async (req, res) => {
   try {

@@ -5,9 +5,11 @@ import { findUserByEmail, createUser } from '../services/authService.js';
 // Global constants for error messages
 const ERR_USERNAME_PASSWORD_REQUIRED = 'Please fill in the required fields';
 const ERR_EMAIL_EXISTS = 'Email already exists.';
-const ERR_SIGNUP_SERVER = 'Server error during signup.';
+const ERR_SIGNUP_SERVER = 'Something went wrong.';
 const ERR_INVALID_CREDENTIALS = 'Invalid credentials.';
-const ERR_LOGIN_SERVER = 'Server error during login.';
+const ERR_LOGIN_SERVER = 'Something went wrong.';
+const LOGIN_SUCCESS = 'Login successful!';
+const SIGNUP_SUCCESS = 'User created successfully!';
 
 // Token configuration
 const TOKEN_EXPIRATION = '1h';
@@ -26,7 +28,7 @@ export const signup = async (req, res) => {
     }
 
     const newUser = await createUser(name, email, password, phone_number, address);
-    return res.status(201).json({ message: 'User created successfully!', user: newUser });
+    return res.status(201).json({ message: SIGNUP_SUCCESS, user: newUser });
   } catch (error) {
     return res.status(500).json({ message: ERR_SIGNUP_SERVER, error: error.message });
   }
@@ -57,7 +59,7 @@ export const login = async (req, res) => {
       { expiresIn: TOKEN_EXPIRATION }
     );
 
-    return res.status(200).json({ message: 'Login successful!', token });
+    return res.status(200).json({ message: LOGIN_SUCCESS, token });
   } catch (error) {
     return res.status(500).json({ message: ERR_LOGIN_SERVER, error: error.message });
   }
