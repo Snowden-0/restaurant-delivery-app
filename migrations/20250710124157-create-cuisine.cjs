@@ -15,6 +15,20 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      created_at: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: Sequelize.literal('NOW()'),
+      },
+      updated_at: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: Sequelize.literal('NOW()'),
+      },
+      deleted_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      }
     });
   },
 

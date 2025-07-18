@@ -39,7 +39,8 @@ export default (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
     tableName: 'user',
-    timestamps: true
+    timestamps: true,
+    paranoid: true
   });
 
   return User;
