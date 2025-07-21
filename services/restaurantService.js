@@ -41,10 +41,16 @@ export const getAllRestaurants = async (filters) => {
 
 export const getRestaurantById = async (id) => {
   try { // Added try block
-    return await sequelize.query(
+    const restaurant = await sequelize.query(
       `SELECT * FROM restaurant WHERE id = :id`,
       { replacements: { id }, type: QueryTypes.SELECT }
     );
+
+    if (restaurant.length > 0) {
+      const menuItems = await getRestaurantMenu(id); // Use the existing function
+      restaurant[0].menu = menuItems; // Attach menu items to the restaurant object
+    }
+    return restaurant;
   } catch (error) { // Added catch block
     console.error('Error fetching restaurant by ID:', error);
     throw error; // Re-throw the error
@@ -76,3 +82,32 @@ export const getRestaurantCuisines = async (restaurantId) => {
     throw error;
   }
 };
+
+export const getRestaurantMenu = async (restaurantId) => {
+  try {
+    const query = `
+      SELECT
+        m.id,
+        m.name,
+        m.description,
+        m.price,
+        m.image_url,
+        m.is_available,
+        m.category
+      FROM
+        menu_item AS m
+      WHERE
+        m.restaurant_id = :restaurantId;
+    `;
+
+    const menuItems = await sequelize.query(query, {
+      replacements: { restaurantId },
+      type: QueryTypes.SELECT
+    });
+
+    return menuItems;
+  } catch (error) {
+    console.error('Error fetching menu for restaurant:', error);
+    throw error;
+  }
+}
