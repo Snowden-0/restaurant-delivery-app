@@ -27,3 +27,12 @@ export const getCuisines = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+export const getMenu = async (req, res) => {
+  try {
+    const menuItems = await service.getRestaurantMenu(req.params.id);
+    return res.json(menuItems);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+}
