@@ -33,3 +33,18 @@ export const createUser = async (name, email, password, phone_number, address) =
     throw error;
   }
 };
+
+export const findUserById = async (id) => {
+  try {
+    // Modify this query to select all required fields
+    const query = `SELECT id, name, email, phone_number, address FROM "user" WHERE "id" = :id;`;
+    const [results] = await sequelize.query(query, {
+      replacements: { id },
+      type: sequelize.QueryTypes.SELECT,
+    });
+    return results;
+  } catch (error) {
+    console.error('Error finding user by ID:', error);
+    throw error;
+  }
+};

@@ -66,8 +66,10 @@ export const login = async (req, res) => {
 };
 
 export const getProfile = (req, res) => {
+  const fullName = req.user.name;
+  const firstName = fullName.split(" ")[0];
   return res.status(200).json({
-    message: "Welcome to your profile!",
+    message: `Welcome ${firstName}`,
     user: req.user
   });
 };
