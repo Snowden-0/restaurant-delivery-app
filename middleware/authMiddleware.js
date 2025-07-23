@@ -1,23 +1,23 @@
 import jwt from 'jsonwebtoken';
+import { findUserById } from '../services/authService.js'; 
 
-export const protect = (req, res, next) => {
+export const protect = async (req, res, next) => { 
   let token;
-  
+
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
-      // Get token from header
+    
       token = req.headers.authorization.split(' ')[1];
-
-      // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Attach user to the request (you might fetch user from DB here if needed)
-      req.user = decoded; 
-      
-      next(); // Proceed to the next middleware/controller
+      req.user = await findUserById(decoded.id); 
+
+      if (!req.user) { 
+        return res.status(401).json({ message: 'Not authorized, user not found' });
+      }
+      next(); 
     } catch (error) {
-      console.error(error);
-      res.status(401).json({ message: 'Not authorized, token failed' });
+      return res.status(401).json({ message: 'Not authorized, token failed' });
     }
   }
 

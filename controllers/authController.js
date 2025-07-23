@@ -67,7 +67,7 @@ export const login = async (req, res) => {
 
 export const getProfile = (req, res) => {
   return res.status(200).json({
-    message: "Welcome to your profile!",
+    message: `Welcome ${req.user.name}`,
     user: req.user
   });
 };
