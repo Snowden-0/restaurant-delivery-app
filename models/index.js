@@ -7,7 +7,6 @@ import defineRestaurantCuisine from './restaurantCuisine.js';
 import defineMenuItem from './menuItem.js';
 import defineOrder from './order.js';
 import defineOrderItem from './orderItem.js';
-import defineDelivery from './delivery.js';
 import definePayment from './payment.js';
 import defineRating from './rating.js';
 
@@ -26,7 +25,6 @@ models.RestaurantCuisine = defineRestaurantCuisine(sequelize, DataTypes);
 models.MenuItem = defineMenuItem(sequelize, DataTypes);
 models.Order = defineOrder(sequelize, DataTypes);
 models.OrderItem = defineOrderItem(sequelize, DataTypes);
-models.Delivery = defineDelivery(sequelize, DataTypes);
 models.Payment = definePayment(sequelize, DataTypes);
 models.Rating = defineRating(sequelize, DataTypes);
 
@@ -44,9 +42,6 @@ models.Order.belongsTo(models.Restaurant, { foreignKey: 'restaurant_id' });
 // Order Relationships
 models.Order.hasMany(models.OrderItem, { foreignKey: 'order_id' });
 models.OrderItem.belongsTo(models.Order, { foreignKey: 'order_id' });
-
-models.Order.hasOne(models.Delivery, { foreignKey: 'order_id' });
-models.Delivery.belongsTo(models.Order, { foreignKey: 'order_id' });
 
 models.Order.hasOne(models.Payment, { foreignKey: 'order_id' });
 models.Payment.belongsTo(models.Order, { foreignKey: 'order_id' });
