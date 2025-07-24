@@ -28,7 +28,14 @@ export const signup = async (req, res) => {
     }
 
     const newUser = await createUser(name, email, password, phone_number, address);
-    return res.status(201).json({ message: SIGNUP_SUCCESS, user: newUser });
+
+    const token = jwt.sign(
+      { id: newUser.id, name: newUser.name, email: newUser.email },
+      process.env.JWT_SECRET,
+      { expiresIn: TOKEN_EXPIRATION }
+    );
+    
+    return res.status(201).json({ message: SIGNUP_SUCCESS, user: newUser, token }); // Send token in the response
   } catch (error) {
     return res.status(500).json({ message: ERR_SIGNUP_SERVER, error: error.message });
   }
@@ -52,12 +59,13 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: ERR_INVALID_CREDENTIALS });
     }
 
-    // Create JWT
-    const token = jwt.sign(
-      { id: user.id, name: user.name, email: user.email },
+    const {id, name, email} = newUser;
+
+      const token = jwt.sign(
+      {id, name, email},
       process.env.JWT_SECRET,
       { expiresIn: TOKEN_EXPIRATION }
-    );
+      );
 
     return res.status(200).json({ message: LOGIN_SUCCESS, token });
   } catch (error) {
