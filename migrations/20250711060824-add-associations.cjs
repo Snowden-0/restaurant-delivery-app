@@ -31,19 +31,6 @@ module.exports = {
         onUpdate: 'CASCADE',
       }),
 
-      // Foreign keys for 'deliveries' table
-      queryInterface.addConstraint('deliveries', {
-        fields: ['order_id'],
-        type: 'foreign key',
-        name: 'fk_deliveries_order_id',
-        references: {
-          table: 'order',
-          field: 'id',
-        },
-        onDelete: 'RESTRICT',
-        onUpdate: 'CASCADE',
-      }),
-
       // Foreign keys for 'payments' table
       queryInterface.addConstraint('payments', {
         fields: ['order_id'],
@@ -139,7 +126,6 @@ module.exports = {
     return Promise.all([
       queryInterface.removeConstraint('order', 'fk_order_user_id'),
       queryInterface.removeConstraint('order', 'fk_order_restaurant_id'),
-      queryInterface.removeConstraint('deliveries', 'fk_deliveries_order_id'),
       queryInterface.removeConstraint('payments', 'fk_payments_order_id'),
       queryInterface.removeConstraint('ratings', 'fk_ratings_order_id'),
       queryInterface.removeConstraint('restaurant_cuisines', 'fk_restaurant_cuisines_restaurant_id'),
