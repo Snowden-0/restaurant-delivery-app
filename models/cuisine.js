@@ -23,7 +23,7 @@ export default (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Cuisine',
     tableName: 'cuisine',
-    timestamps: false,
+    timestamps: true,
     paranoid: true
   });
 
