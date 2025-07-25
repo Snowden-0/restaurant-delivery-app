@@ -7,7 +7,6 @@ export const createOrderInTransaction = async (orderData) => {
   try {
     const { userId, restaurantId, totalAmount, paymentMethod, items } = orderData;
 
-    // 1. Create the Order
     const orderQuery = `
       INSERT INTO "order" (user_id, restaurant_id, total_amount, status, created_at, updated_at)
       VALUES (:userId, :restaurantId, :totalAmount, 'pending', NOW(), NOW())
@@ -21,22 +20,21 @@ export const createOrderInTransaction = async (orderData) => {
 
     const orderId = newOrder[0].id;
 
-    const orderItemValues = items.map(item => 
-      `('${item.menuItemId}', '${orderId}', ${item.quantity})`
+    const orderItemValues = items.map(item =>
+      `('${item.menuItemId}', '${orderId}', ${item.quantity}, NOW(), NOW())`
     ).join(',');
 
     const orderItemsQuery = `
-      INSERT INTO "order_item" (menu_item_id, order_id, quantity, created_at, updated_at)
-      VALUES ${orderItemValues}, NOW(), NOW();
+      INSERT INTO "order_items" (menu_item_id, order_id, quantity, created_at, updated_at)
+      VALUES ${orderItemValues};
     `;
     await sequelize.query(orderItemsQuery, {
       type: QueryTypes.INSERT,
       transaction: transaction,
     });
 
-    // 3. Create the Payment
     const paymentQuery = `
-      INSERT INTO "payment" (order_id, amount, method, status, created_at, updated_at)
+      INSERT INTO "payments" (order_id, amount, method, status, created_at, updated_at)
       VALUES (:orderId, :amount, :method, 'completed', NOW(), NOW())
       RETURNING id, status;
     `;
@@ -57,6 +55,6 @@ export const createOrderInTransaction = async (orderData) => {
   } catch (error) {
     await transaction.rollback();
     console.error('Failed to create order:', error);
-    throw new Error('Order creation failed due to a database error.');
+    throw new Error('Failed to create order');
   }
 };

@@ -93,7 +93,8 @@ export const getRestaurantMenu = async (restaurantId) => {
         m.price,
         m.image_url,
         m.is_available,
-        m.category
+        m.category,
+        m.restaurant_id AS "restaurantId" 
       FROM
         menu_item AS m
       WHERE
