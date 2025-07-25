@@ -59,7 +59,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: ERR_INVALID_CREDENTIALS });
     }
 
-    const {id, name, email} = newUser;
+    const {id, name} = user;
 
       const token = jwt.sign(
       {id, name, email},
