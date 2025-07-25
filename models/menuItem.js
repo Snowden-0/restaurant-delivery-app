@@ -38,7 +38,7 @@ export default (sequelize, DataTypes) => {
     sequelize,
     modelName: 'MenuItem',
     tableName: 'menu_item',
-    timestamps: false,
+    timestamps: true,
     paranoid: true
   });
 

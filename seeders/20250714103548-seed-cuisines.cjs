@@ -9,12 +9,14 @@ module.exports = {
       'Mexican',
       'Italian',
       'Turkish',
-      
     ];
 
+    const now = new Date();
     const cuisines = cuisineNames.map(name => ({
       id: uuidv4(),
-      name
+      name,
+      created_at: now,
+      updated_at: now
     }));
 
     return queryInterface.bulkInsert('cuisine', cuisines, {});

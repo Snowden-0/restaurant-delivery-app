@@ -5,6 +5,7 @@ import { connectDB } from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
 import cuisineRoutes from './routes/cuisineRoutes.js';
 import restaurantRoutes from './routes/restaurantRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
 
 
 // Load environment variables
@@ -25,6 +26,7 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/cuisines', cuisineRoutes);
 app.use('/api/restaurants', restaurantRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Simple welcome route
 app.get('/', (req, res) => {
