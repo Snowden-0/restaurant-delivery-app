@@ -73,7 +73,7 @@ export const fetchOrdersByUserId = async (userId) => {
         o.created_at,
         r.name AS restaurant_name
       FROM "order" AS o
-      JOIN "restaurant" AS r ON o.restaurant_id = r.id
+      LEFT JOIN "restaurant" AS r ON o.restaurant_id = r.id
       WHERE o.user_id = :userId
       ORDER BY o.created_at DESC;
     `;
@@ -101,8 +101,8 @@ export const fetchOrderDetailById = async (orderId, userId) => {
         p.method AS payment_method,
         p.status AS payment_status
       FROM "order" AS o
-      JOIN "restaurant" AS r ON o.restaurant_id = r.id
-      JOIN "payments" AS p ON o.id = p.order_id
+      LEFT JOIN "restaurant" AS r ON o.restaurant_id = r.id
+      LEFT JOIN "payments" AS p ON o.id = p.order_id
       WHERE o.id = :orderId AND o.user_id = :userId;
     `;
     const [order] = await sequelize.query(orderDetailQuery, {
@@ -120,7 +120,7 @@ export const fetchOrderDetailById = async (orderId, userId) => {
         mi.name AS menu_item_name,
         mi.price AS menu_item_price
       FROM "order_items" AS oi
-      JOIN "menu_item" AS mi ON oi.menu_item_id = mi.id
+      LEFT JOIN "menu_item" AS mi ON oi.menu_item_id = mi.id
       WHERE oi.order_id = :orderId;
     `;
     const items = await sequelize.query(orderItemsQuery, {
