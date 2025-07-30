@@ -21,7 +21,7 @@ export default (sequelize, DataTypes) => {
     },
     status: {
       type: DataTypes.ENUM('pending', 'preparing', 'on_the_way', 'delivered', 'cancelled'),
-      defaultValue: 'pending'
+      defaultValue: 'delivered'
     },
     total_amount: {
       type: DataTypes.DECIMAL(10, 2),

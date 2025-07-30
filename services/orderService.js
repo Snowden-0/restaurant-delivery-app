@@ -14,7 +14,7 @@ export const createOrderInTransaction = async (orderData) => {
 
     const orderQuery = `
       INSERT INTO "order" (user_id, restaurant_id, total_amount, status, created_at, updated_at)
-      VALUES (:userId, :restaurantId, :totalAmount, 'pending', NOW(), NOW())
+      VALUES (:userId, :restaurantId, :totalAmount, 'delivered', NOW(), NOW())
       RETURNING id, status, total_amount;
     `;
     const [newOrder] = await sequelize.query(orderQuery, {

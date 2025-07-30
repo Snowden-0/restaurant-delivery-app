@@ -12,7 +12,7 @@ module.exports = {
       },
       rating: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       comment: {
         type: DataTypes.TEXT,
