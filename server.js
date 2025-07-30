@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes.js';
 import cuisineRoutes from './routes/cuisineRoutes.js';
 import restaurantRoutes from './routes/restaurantRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import ratingRoutes from './routes/ratingRoutes.js'
 
 
 // Load environment variables
@@ -15,11 +16,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors()); // Enable CORS for all routes
-app.use(express.json()); // To parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // To parse URL-encoded bodies
+app.use(cors()); 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
 
-// Connect to Database
+
 connectDB();
 
 // API Routes
@@ -27,6 +28,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/cuisines', cuisineRoutes);
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/rating', ratingRoutes)
 
 // Simple welcome route
 app.get('/', (req, res) => {
