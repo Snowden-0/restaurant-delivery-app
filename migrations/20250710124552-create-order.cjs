@@ -13,7 +13,7 @@ module.exports = {
       status: {
         type: DataTypes.ENUM('pending', 'preparing', 'on_the_way', 'delivered', 'cancelled'),
         allowNull: false,
-        defaultValue: 'pending',
+        defaultValue: 'delivered',
       },
       total_amount: {
         type: DataTypes.DECIMAL(10, 2),

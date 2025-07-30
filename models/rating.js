@@ -16,12 +16,12 @@ export default (sequelize, DataTypes) => {
     },
     rating: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     comment: DataTypes.TEXT,
     order_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       unique: true,
       references: { model: 'order', key: 'id' }
     }
