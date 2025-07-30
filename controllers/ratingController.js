@@ -20,11 +20,11 @@ export const createRating = async (req, res) => {
       return res.status(400).json({ message: MISSING_RATING_DATA });
     }
 
-    if (rating !== undefined && (typeof rating !== 'number' || rating < 1 || rating > 5)) {
+    if (rating && (typeof rating !== 'number' || rating < 1 || rating > 5)) {
       return res.status(400).json({ message: INVALID_RATING_VALUE });
     }
 
-    if (rating === undefined && comment === undefined) {
+    if (!rating && !comment) {
         return res.status(400).json({ message: 'At least rating or comment must be provided.' });
     }
 

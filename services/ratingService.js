@@ -34,7 +34,7 @@ export const createRatingById = async (orderId, userId, rating, comment) => {
       throw new Error(ERROR_RATING_ALREADY_EXISTS);
     }
       
-    if (rating === undefined && comment === undefined) {
+    if (!rating && !comment) {
       throw new Error('At least rating or comment must be provided to create a new rating.');
     }
 
@@ -44,7 +44,7 @@ export const createRatingById = async (orderId, userId, rating, comment) => {
         RETURNING id, order_id, rating, comment, created_at, updated_at;
       `;
       const [newRating] = await sequelize.query(createRatingQuery, {
-        replacements: { orderId, rating: rating !== undefined ? rating : null, comment: comment !== undefined ? comment : null },
+        replacements: { orderId, rating: rating || null, comment: comment || null },
         type: QueryTypes.INSERT,
       });
       ratingResult = newRating[0];
