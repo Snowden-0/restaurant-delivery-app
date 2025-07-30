@@ -99,10 +99,13 @@ export const fetchOrderDetailById = async (orderId, userId) => {
         r.name AS restaurant_name,
         r.address AS restaurant_address,
         p.method AS payment_method,
-        p.status AS payment_status
+        p.status AS payment_status,
+        rt.rating AS order_rating,
+        rt.comment AS order_comment
       FROM "order" AS o
       LEFT JOIN "restaurant" AS r ON o.restaurant_id = r.id
       LEFT JOIN "payments" AS p ON o.id = p.order_id
+      LEFT JOIN "ratings" AS rt ON o.id = rt.order_id
       WHERE o.id = :orderId AND o.user_id = :userId;
     `;
     const [order] = await sequelize.query(orderDetailQuery, {
