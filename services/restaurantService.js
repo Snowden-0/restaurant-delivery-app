@@ -12,7 +12,7 @@ export const getAllRestaurants = async (filters) => {
     FROM restaurant r
     LEFT JOIN restaurant_cuisines rc ON r.id = rc.restaurant_id
     LEFT JOIN cuisine c ON rc.cuisine_id = c.id
-    LEFT JOIN order o ON r.id = o.restaurant_id
+    LEFT JOIN "order" o ON r.id = o.restaurant_id
     LEFT JOIN ratings rt ON o.id = rt.order_id AND rt.deleted_at IS NULL
     WHERE r.deleted_at IS NULL
   `;
@@ -64,7 +64,7 @@ export const getRestaurantById = async (id) => {
         ROUND(AVG(rt.rating), 2) AS average_rating,
         COUNT(rt.id) AS total_ratings
       FROM restaurant r
-      LEFT JOIN order o ON r.id = o.restaurant_id
+      LEFT JOIN "order" o ON r.id = o.restaurant_id
       LEFT JOIN ratings rt ON o.id = rt.order_id AND rt.deleted_at IS NULL
       WHERE r.id = :id AND r.deleted_at IS NULL
       GROUP BY r.id, r.name, r.address, r.phone, r.description, 
