@@ -5,11 +5,16 @@ export const getAllRestaurants = async (filters) => {
   const { name, cuisine, showAvailable } = filters;
 
   let query = `
-    SELECT DISTINCT r.*
+    SELECT DISTINCT 
+      r.*,
+      ROUND(AVG(rt.rating), 2) AS average_rating,
+      COUNT(rt.id) AS total_ratings
     FROM restaurant r
     LEFT JOIN restaurant_cuisines rc ON r.id = rc.restaurant_id
     LEFT JOIN cuisine c ON rc.cuisine_id = c.id
-    WHERE 1=1
+    LEFT JOIN "order" o ON r.id = o.restaurant_id
+    LEFT JOIN ratings rt ON o.id = rt.order_id AND rt.deleted_at IS NULL
+    WHERE r.deleted_at IS NULL
   `;
 
   const replacements = {};
@@ -28,32 +33,60 @@ export const getAllRestaurants = async (filters) => {
     query += ` AND r.is_available = true`;
   }
 
-  try { // Added try block
-    return await sequelize.query(query, {
+  query += `
+    GROUP BY r.id, r.name, r.address, r.phone, r.description, 
+             r.image_url, r.is_available, r.created_at, r.updated_at
+    ORDER BY r.name
+  `;
+
+  try {
+    const restaurants = await sequelize.query(query, {
       type: QueryTypes.SELECT,
       replacements
     });
-  } catch (error) { // Added catch block
+
+    return restaurants.map(restaurant => ({
+      ...restaurant,
+      average_rating: restaurant.average_rating || null,
+      total_ratings: parseInt(restaurant.total_ratings) || 0
+    }));
+  } catch (error) {
     console.error('Error fetching all restaurants:', error);
-    throw error; // Re-throw the error so the calling controller can handle it
+    throw error;
   }
 };
 
 export const getRestaurantById = async (id) => {
-  try { // Added try block
-    const restaurant = await sequelize.query(
-      `SELECT * FROM restaurant WHERE id = :id`,
-      { replacements: { id }, type: QueryTypes.SELECT }
-    );
+  try {
+    const restaurantQuery = `
+      SELECT 
+        r.*,
+        ROUND(AVG(rt.rating), 2) AS average_rating,
+        COUNT(rt.id) AS total_ratings
+      FROM restaurant r
+      LEFT JOIN "order" o ON r.id = o.restaurant_id
+      LEFT JOIN ratings rt ON o.id = rt.order_id AND rt.deleted_at IS NULL
+      WHERE r.id = :id AND r.deleted_at IS NULL
+      GROUP BY r.id, r.name, r.address, r.phone, r.description, 
+               r.image_url, r.is_available, r.created_at, r.updated_at
+    `;
+
+    const restaurant = await sequelize.query(restaurantQuery, {
+      replacements: { id }, 
+      type: QueryTypes.SELECT 
+    });
 
     if (restaurant.length > 0) {
-      const menuItems = await getRestaurantMenu(id); // Use the existing function
-      restaurant[0].menu = menuItems; // Attach menu items to the restaurant object
+      const menuItems = await getRestaurantMenu(id);
+      restaurant[0].menu = menuItems;
+      // Format the rating data
+      restaurant[0].average_rating = restaurant[0].average_rating || null;
+      restaurant[0].total_ratings = parseInt(restaurant[0].total_ratings) || 0;
     }
     return restaurant;
-  } catch (error) { // Added catch block
+  } catch (error) {
     console.error('Error fetching restaurant by ID:', error);
-    throw error; // Re-throw the error
+    throw error;
   }
 };
 
@@ -111,4 +144,4 @@ export const getRestaurantMenu = async (restaurantId) => {
     console.error('Error fetching menu for restaurant:', error);
     throw error;
   }
-}
+};
