@@ -2,7 +2,7 @@ import sequelize from '../config/database.js';
 import { QueryTypes } from 'sequelize';
 
 export const getAllRestaurants = async (filters) => {
-  const { name, cuisine, showAvailable } = filters;
+  const { name, cuisine, cuisines, isOpen, minRating } = filters;
 
   let query = `
     SELECT DISTINCT 
@@ -24,20 +24,31 @@ export const getAllRestaurants = async (filters) => {
     replacements.name = `%${name}%`;
   }
 
-  if (cuisine) {
+  if (cuisines && cuisines.length > 0) {
+    query += ` AND c.id IN (:cuisines)`;
+    replacements.cuisines = cuisines;
+  } else if (cuisine) {
     query += ` AND c.name ILIKE :cuisine`;
     replacements.cuisine = `%${cuisine}%`;
   }
 
-  if (showAvailable === 'true') {
+  if (isOpen === 'true') {
     query += ` AND r.is_available = true`;
+  } else if (isOpen === 'false') {
+    query += ` AND r.is_available = false`;
   }
 
   query += `
     GROUP BY r.id, r.name, r.address, r.phone, r.description, 
              r.image_url, r.is_available, r.created_at, r.updated_at
-    ORDER BY r.name
   `;
+
+  if (minRating && !isNaN(parseFloat(minRating))) {
+    query += ` HAVING AVG(rt.rating) >= :minRating`;
+    replacements.minRating = parseFloat(minRating);
+  }
+
+  query += ` ORDER BY r.name`;
 
   try {
     const restaurants = await sequelize.query(query, {
@@ -79,7 +90,6 @@ export const getRestaurantById = async (id) => {
     if (restaurant.length > 0) {
       const menuItems = await getRestaurantMenu(id);
       restaurant[0].menu = menuItems;
-      // Format the rating data
       restaurant[0].average_rating = restaurant[0].average_rating || null;
       restaurant[0].total_ratings = parseInt(restaurant[0].total_ratings) || 0;
     }
@@ -142,6 +152,34 @@ export const getRestaurantMenu = async (restaurantId) => {
     return menuItems;
   } catch (error) {
     console.error('Error fetching menu for restaurant:', error);
+    throw error;
+  }
+};
+
+export const getAllCuisines = async () => {
+  try {
+    const query = `
+      SELECT DISTINCT
+        c.id,
+        c.name
+      FROM
+        cuisine AS c
+      JOIN
+        restaurant_cuisines AS rc ON c.id = rc.cuisine_id
+      JOIN
+        restaurant AS r ON rc.restaurant_id = r.id
+      WHERE
+        r.deleted_at IS NULL
+      ORDER BY c.name;
+    `;
+
+    const cuisines = await sequelize.query(query, {
+      type: QueryTypes.SELECT
+    });
+
+    return cuisines;
+  } catch (error) {
+    console.error('Error fetching all cuisines:', error);
     throw error;
   }
 };
