@@ -8,7 +8,6 @@ export const getAll = async (req, res) => {
       if (typeof req.query.cuisines === 'string') {
         filters.cuisines = req.query.cuisines.split(',').map(id => id.trim());
       } else if (Array.isArray(req.query.cuisines)) {
-
         filters.cuisines = req.query.cuisines;
       }
       
@@ -35,8 +34,29 @@ export const getAll = async (req, res) => {
       });
     }
 
-    const restaurants = await service.getAllRestaurants(filters);
-    return res.json(restaurants);
+    // Validate pagination parameters
+    if (req.query.page) {
+      const page = parseInt(req.query.page, 10);
+      if (isNaN(page) || page < 1) {
+        return res.status(400).json({ 
+          error: 'page must be a positive integer starting from 1' 
+        });
+      }
+      filters.page = page;
+    }
+
+    if (req.query.limit) {
+      const limit = parseInt(req.query.limit, 10);
+      if (isNaN(limit) || limit < 1 || limit > 100) {
+        return res.status(400).json({ 
+          error: 'limit must be a positive integer between 1 and 100' 
+        });
+      }
+      filters.limit = limit;
+    }
+
+    const result = await service.getAllRestaurants(filters);
+    return res.json(result);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
