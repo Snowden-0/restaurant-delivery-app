@@ -1,4 +1,5 @@
 import { createOrderInTransaction, fetchOrdersByUserId, fetchOrderDetailById } from '../services/orderService.js';
+import {sendOrderConfirmation} from '../services/mailService.js';
 
 const ORDER_SUCCESS = 'Order created successfully';
 const GENERIC_ERROR = 'Something went wrong';
@@ -12,6 +13,7 @@ const UNAUTHORIZED_ACCESS_SINGLE_ORDER = 'Unauthorized access to this order';
 export const createOrder = async (req, res) => {
   try {
     const userId = req.user.id;
+    const email = req.user.email;
     if (!userId) {
       return res.status(401).json({ message: AUTH_ERROR });
     }
@@ -28,9 +30,18 @@ export const createOrder = async (req, res) => {
       paymentMethod,
       items,
     };
-
     const newOrder = await createOrderInTransaction(orderData);
+    if (email) {
+        const emailBody = `
+        <h2>Thank you for your order!</h2>
+        <p>Your order has been successfully placed.</p>
+        <p>Order ID: ${newOrder.id}</p>
+        <p>Total Amount: $${totalAmount}</p>
+        <p>Payment Method: ${paymentMethod}</p>
+        `;
 
+        await sendOrderConfirmation(email, "Order Confirmation", emailBody);
+    }
     return res.status(201).json({ message: ORDER_SUCCESS, order: newOrder });
   } catch (error) {
     return res.status(500).json({ message: error.message || GENERIC_ERROR });
