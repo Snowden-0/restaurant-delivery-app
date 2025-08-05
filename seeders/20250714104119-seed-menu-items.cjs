@@ -13,11 +13,11 @@ module.exports = {
     const itemTemplates = [
       // Starters
       { name: 'Bruschetta', description: 'Grilled bread topped with diced tomatoes, garlic, and basil.', price: 6.5, image_url: null, is_available: true, category: 'Starters', created_at: now, updated_at: now },
-      { name: 'Stuffed Mushrooms', description: 'Button mushrooms filled with cheese and herbs, baked to perfection.', price: 7.0, image_url: null, is_available: true, category: 'Starters', created_at: now, updated_at: now },
-      { name: 'Chicken Wings', description: 'Crispy wings tossed in your choice of buffalo or BBQ sauce.', price: 8.25, image_url: null, is_available: true, category: 'Starters', created_at: now, updated_at: now },
-      { name: 'Calamari', description: 'Lightly fried squid rings served with marinara sauce.', price: 9.5, image_url: null, is_available: true, category: 'Starters', created_at: now, updated_at: now },
-      { name: 'Loaded Nachos', description: 'Tortilla chips topped with cheese, jalapeños, and sour cream.', price: 8.75, image_url: null, is_available: true, category: 'Starters', created_at: now, updated_at: now },
-      { name: 'Spring Rolls', description: 'Crispy rolls filled with vegetables.', price: 5.5, image_url: null, is_available: true, category: 'Starters', created_at: now, updated_at: now },
+      { name: 'Stuffed Mushrooms', description: 'Button mushrooms filled with cheese and herbs, baked to perfection.', price: 7.0, image_url: 'https://snowden-0.github.io/restaurant-app-assets/menu/stuffed-mushroom.png', is_available: true, category: 'Starters', created_at: now, updated_at: now },
+      { name: 'Chicken Wings', description: 'Crispy wings tossed in your choice of buffalo or BBQ sauce.', price: 8.25, image_url: 'https://snowden-0.github.io/restaurant-app-assets/menu/chicken-wings.png', is_available: true, category: 'Starters', created_at: now, updated_at: now },
+      { name: 'Calamari', description: 'Lightly fried squid rings served with marinara sauce.', price: 9.5, image_url: 'https://snowden-0.github.io/restaurant-app-assets/menu/calamari.png', is_available: true, category: 'Starters', created_at: now, updated_at: now },
+      { name: 'Loaded Nachos', description: 'Tortilla chips topped with cheese, jalapeños, and sour cream.', price: 8.75, image_url: 'https://snowden-0.github.io/restaurant-app-assets/menu/loaded-nachos.png', is_available: true, category: 'Starters', created_at: now, updated_at: now },
+      { name: 'Spring Rolls', description: 'Crispy rolls filled with vegetables.', price: 5.5, image_url: 'https://snowden-0.github.io/restaurant-app-assets/menu/spring-rolls.png', is_available: true, category: 'Starters', created_at: now, updated_at: now },
       { name: 'Samosas', description: 'Spiced potato and pea pastry.', price: 4.0, image_url: null, is_available: true, category: 'Starters', created_at: now, updated_at: now },
       { name: 'Mozzarella Sticks', description: 'Fried cheese sticks with marinara.', price: 7.0, image_url: null, is_available: true, category: 'Starters', created_at: now, updated_at: now },
       { name: 'Shrimp Cocktail', description: 'Chilled shrimp with cocktail sauce.', price: 9.0, image_url: null, is_available: true, category: 'Starters', created_at: now, updated_at: now },
