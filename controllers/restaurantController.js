@@ -8,7 +8,7 @@ export const getAll = async (req, res) => {
       if (typeof req.query.cuisines === 'string') {
         filters.cuisines = req.query.cuisines.split(',').map(id => id.trim());
       } else if (Array.isArray(req.query.cuisines)) {
-        filters.cuisines = req.query.cuisines;
+        filters.cuisines = filters.cuisines.map(id => id.trim()); // Ensure trimming for array also
       }
       
       filters.cuisines = filters.cuisines.filter(id => id && id.length > 0);
@@ -53,6 +53,11 @@ export const getAll = async (req, res) => {
         });
       }
       filters.limit = limit;
+    }
+
+    // Pass the sort parameter from the query to the service
+    if (req.query.sort) {
+      filters.sort = req.query.sort;
     }
 
     const result = await service.getAllRestaurants(filters);

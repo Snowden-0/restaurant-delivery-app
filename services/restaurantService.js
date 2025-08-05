@@ -2,11 +2,14 @@ import sequelize from '../config/database.js';
 import { QueryTypes } from 'sequelize';
 
 export const getAllRestaurants = async (filters) => {
-  const { name, cuisine, cuisines, isOpen, minRating, page = 1, limit = 10 } = filters;
+  // Destructure with a clear default for limit, matching frontend's common default if possible
+  const { name, cuisine, cuisines, isOpen, minRating, page = 1, sort } = filters;
+  // Explicitly handle limit to ensure it's always a number, prioritizing filters.limit
+  const limit = filters.limit ? parseInt(filters.limit, 10) : 9; // Use 9 as default if not provided, matching frontend's DEFAULT_ITEMS_PER_PAGE
 
   // Convert page and limit to numbers and validate
   const pageNumber = Math.max(1, parseInt(page, 10));
-  const limitNumber = Math.min(Math.max(1, parseInt(limit, 10)), 100); // Max 100 items per page
+  const limitNumber = Math.min(Math.max(1, limit), 100); // Max 100 items per page
   const offset = (pageNumber - 1) * limitNumber;
 
   let countQuery = `
@@ -73,7 +76,31 @@ export const getAllRestaurants = async (filters) => {
     replacements.minRating = parseFloat(minRating);
   }
 
-  query += ` ORDER BY r.name LIMIT :limit OFFSET :offset`;
+  // --- Dynamic ORDER BY clause based on 'sort' parameter ---
+  let orderByClause = '';
+  switch (sort) {
+    case 'name-asc':
+      orderByClause = ` ORDER BY r.name ASC`;
+      break;
+    case 'name-desc':
+      orderByClause = ` ORDER BY r.name DESC`;
+      break;
+    case 'rating-desc':
+      // Sort by average_rating descending, NULLs last
+      orderByClause = ` ORDER BY average_rating DESC NULLS LAST`;
+      break;
+    case 'rating-asc':
+      // Sort by average_rating ascending, NULLs last
+      orderByClause = ` ORDER BY average_rating ASC NULLS LAST`;
+      break;
+    default:
+      // Default sort if no valid option is provided
+      orderByClause = ` ORDER BY r.name ASC`;
+      break;
+  }
+
+  query += orderByClause; // Add the dynamic order by clause
+  query += ` LIMIT :limit OFFSET :offset`;
   replacements.limit = limitNumber;
   replacements.offset = offset;
 
