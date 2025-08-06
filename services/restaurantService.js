@@ -2,11 +2,14 @@ import sequelize from '../config/database.js';
 import { QueryTypes } from 'sequelize';
 
 export const getAllRestaurants = async (filters) => {
-  const { name, cuisine, cuisines, isOpen, minRating, page = 1, limit = 10 } = filters;
+  // Updated destructuring to include sortBy and sortOrder instead of sort
+  const { name, cuisine, cuisines, isOpen, minRating, page = 1, sortBy, sortOrder } = filters;
+  // Explicitly handle limit to ensure it's always a number, prioritizing filters.limit
+  const limit = filters.limit ? parseInt(filters.limit, 10) : 9; // Use 9 as default if not provided, matching frontend's DEFAULT_ITEMS_PER_PAGE
 
   // Convert page and limit to numbers and validate
   const pageNumber = Math.max(1, parseInt(page, 10));
-  const limitNumber = Math.min(Math.max(1, parseInt(limit, 10)), 100); // Max 100 items per page
+  const limitNumber = Math.min(Math.max(1, limit), 100); // Max 100 items per page
   const offset = (pageNumber - 1) * limitNumber;
 
   let countQuery = `
@@ -67,27 +70,92 @@ export const getAllRestaurants = async (filters) => {
     GROUP BY r.id, r.name, r.address, r.phone, r.description, 
              r.image_url, r.is_available, r.created_at, r.updated_at
   `;
-
-  if (minRating && !isNaN(parseFloat(minRating))) {
+  if (cuisines && cuisines.length > 0) {
+    const cuisineCountFilter = ` HAVING COUNT(DISTINCT c.id) = :cuisineCount`;
+    query += cuisineCountFilter;
+    replacements.cuisineCount = cuisines.length;
+    countQuery = `
+      SELECT COUNT(*) as total_count FROM (
+        SELECT DISTINCT 
+          r.id
+        FROM restaurant r
+        LEFT JOIN restaurant_cuisines rc ON r.id = rc.restaurant_id
+        LEFT JOIN cuisine c ON rc.cuisine_id = c.id
+        LEFT JOIN "order" o ON r.id = o.restaurant_id
+        LEFT JOIN ratings rt ON o.id = rt.order_id AND rt.deleted_at IS NULL
+        WHERE r.deleted_at IS NULL
+        AND c.id IN (:cuisines)
+        GROUP BY r.id
+        HAVING COUNT(DISTINCT c.id) = :cuisineCount
+      ) AS filtered_restaurants_count
+    `;
+    replacements.cuisineCount = cuisines.length;
+  } else if (minRating && !isNaN(parseFloat(minRating))) {
     query += ` HAVING AVG(rt.rating) >= :minRating`;
     replacements.minRating = parseFloat(minRating);
   }
 
-  query += ` ORDER BY r.name LIMIT :limit OFFSET :offset`;
+  // --- Dynamic ORDER BY clause based on 'sortBy' and 'sortOrder' parameters ---
+  let orderByClause = '';
+  
+  // Define allowed columns for sorting (security measure)
+  const allowedSortColumns = {
+    'name': 'r.name',
+    'rating': 'average_rating',
+    'created_at': 'r.created_at',
+    'updated_at': 'r.updated_at'
+  };
+  
+  // Define allowed sort orders (security measure)
+  const allowedSortOrders = ['ASC', 'DESC'];
+  
+  // Validate and set sortBy
+  const validSortBy = allowedSortColumns[sortBy] || allowedSortColumns['name'];
+  
+  // Validate and set sortOrder
+  const validSortOrder = allowedSortOrders.includes(sortOrder?.toUpperCase()) 
+    ? sortOrder.toUpperCase() 
+    : 'ASC';
+  
+  // Handle special cases for rating (NULLS LAST)
+  if (sortBy === 'rating') {
+    orderByClause = ` ORDER BY ${validSortBy} ${validSortOrder} NULLS LAST`;
+  } else {
+    orderByClause = ` ORDER BY ${validSortBy} ${validSortOrder}`;
+  }
+
+  query += orderByClause; // Add the dynamic order by clause
+  query += ` LIMIT :limit OFFSET :offset`;
   replacements.limit = limitNumber;
   replacements.offset = offset;
 
   try {
-    const [restaurants, countResult] = await Promise.all([
-      sequelize.query(query, {
-        type: QueryTypes.SELECT,
-        replacements
-      }),
-      sequelize.query(countQuery, {
-        type: QueryTypes.SELECT,
-        replacements: { ...replacements }
-      })
-    ]);
+    let restaurants, countResult;
+    
+    // Handle the two different count query scenarios
+    if (cuisines && cuisines.length > 0) {
+      [restaurants, countResult] = await Promise.all([
+        sequelize.query(query, {
+          type: QueryTypes.SELECT,
+          replacements
+        }),
+        sequelize.query(countQuery, {
+          type: QueryTypes.SELECT,
+          replacements
+        })
+      ]);
+    } else {
+      [restaurants, countResult] = await Promise.all([
+        sequelize.query(query, {
+          type: QueryTypes.SELECT,
+          replacements
+        }),
+        sequelize.query(countQuery, {
+          type: QueryTypes.SELECT,
+          replacements: { ...replacements }
+        })
+      ]);
+    }
 
     const totalCount = parseInt(countResult[0]?.total_count || 0);
     const totalPages = Math.ceil(totalCount / limitNumber);
