@@ -2,8 +2,8 @@ import sequelize from '../config/database.js';
 import { QueryTypes } from 'sequelize';
 
 export const getAllRestaurants = async (filters) => {
-  // Destructure with a clear default for limit, matching frontend's common default if possible
-  const { name, cuisine, cuisines, isOpen, minRating, page = 1, sort } = filters;
+  // Updated destructuring to include sortBy and sortOrder instead of sort
+  const { name, cuisine, cuisines, isOpen, minRating, page = 1, sortBy, sortOrder } = filters;
   // Explicitly handle limit to ensure it's always a number, prioritizing filters.limit
   const limit = filters.limit ? parseInt(filters.limit, 10) : 9; // Use 9 as default if not provided, matching frontend's DEFAULT_ITEMS_PER_PAGE
 
@@ -95,27 +95,33 @@ export const getAllRestaurants = async (filters) => {
     replacements.minRating = parseFloat(minRating);
   }
 
-  // --- Dynamic ORDER BY clause based on 'sort' parameter ---
+  // --- Dynamic ORDER BY clause based on 'sortBy' and 'sortOrder' parameters ---
   let orderByClause = '';
-  switch (sort) {
-    case 'name-asc':
-      orderByClause = ` ORDER BY r.name ASC`;
-      break;
-    case 'name-desc':
-      orderByClause = ` ORDER BY r.name DESC`;
-      break;
-    case 'rating-desc':
-      // Sort by average_rating descending, NULLs last
-      orderByClause = ` ORDER BY average_rating DESC NULLS LAST`;
-      break;
-    case 'rating-asc':
-      // Sort by average_rating ascending, NULLs last
-      orderByClause = ` ORDER BY average_rating ASC NULLS LAST`;
-      break;
-    default:
-      // Default sort if no valid option is provided
-      orderByClause = ` ORDER BY r.name ASC`;
-      break;
+  
+  // Define allowed columns for sorting (security measure)
+  const allowedSortColumns = {
+    'name': 'r.name',
+    'rating': 'average_rating',
+    'created_at': 'r.created_at',
+    'updated_at': 'r.updated_at'
+  };
+  
+  // Define allowed sort orders (security measure)
+  const allowedSortOrders = ['ASC', 'DESC'];
+  
+  // Validate and set sortBy
+  const validSortBy = allowedSortColumns[sortBy] || allowedSortColumns['name'];
+  
+  // Validate and set sortOrder
+  const validSortOrder = allowedSortOrders.includes(sortOrder?.toUpperCase()) 
+    ? sortOrder.toUpperCase() 
+    : 'ASC';
+  
+  // Handle special cases for rating (NULLS LAST)
+  if (sortBy === 'rating') {
+    orderByClause = ` ORDER BY ${validSortBy} ${validSortOrder} NULLS LAST`;
+  } else {
+    orderByClause = ` ORDER BY ${validSortBy} ${validSortOrder}`;
   }
 
   query += orderByClause; // Add the dynamic order by clause
